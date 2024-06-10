@@ -1,0 +1,31 @@
+go atlas simflags="-P 4"
+mesh infile=diode.str
+#
+models srh cvt boltzman print numcarr=2 temperature=300 
+#
+impact selb
+#
+mobility bn.cvt=4.75e7 bp.cvt=9.925e6 cn.cvt=1.74e5 cp.cvt=8.842e5 taun.cvt=0.125 taup.cvt=0.0317 gamn.cvt=2.5 gamp.cvt=2.2 mu0n.cvt=52.2 mu0p.cvt=44.9 mu1n.cvt=43.4 mu1p.cvt=29.0 mumaxn.cvt=1417.0 mumaxp.cvt=470.5 crn.cvt=9.68e16 crp.cvt=2.23e17 csn.cvt=3.43e20 csp.cvt=6.10e20 alphn.cvt=0.680 alphp.cvt=0.71 betan.cvt=2.0 betap.cvt=2.0 pcn.cvt=0.0 pcp.cvt=0.23e16 deln.cvt=5.82e14 delp.cvt=2.0546e14 
+#
+method newton climit=1e-4 itlimit=200 trap atrap=0.5 maxtrap=10 autonr nrcriterion=0.1 tol.time=5e-3 dt.min=1e-25 
+##
+
+solve init
+
+##
+solve vcathode=0.0
+log outfile=diode_pos.log
+solve vanode=0 vstep=0.2 vfinal=0.6 name=P
+solve vanode=0.6 vstep=0.025 vfinal=1.25 name=P
+solve vanode=1.25 vstep=0.25 vfinal=3.5 name=P
+
+tonyplot diode_pos.log
+
+##
+solve vcathode=0.0
+log outf=diode_neg.log
+solve vanode=0.2 vstep=-0.025 vfinal=0.0 name=P
+solve vanode=0.0 vstep=-0.5 vfinal=-8.0 name=P
+solve vanode=-8.0 vstep=-0.025 vfinal=-8.6 name=P
+
+tonyplot diode_neg.log
